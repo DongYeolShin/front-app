@@ -1,11 +1,38 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import useAuthStore from "../../../store/useAuthStore";
+
+const MOCK_USER = {
+  id: "admin",
+  password: "admin",
+  name: "김철수",
+};
 
 const LoginPage = () => {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const setUser = useAuthStore((state) => state.setUser);
 
   const handleLogin = () => {
-    console.log("로그인 시도:", { id, password });
+    if (!id || !password) {
+      alert("아이디와 비밀번호를 모두 입력해주세요.");
+      return;
+    }
+
+    if (id !== MOCK_USER.id || password !== MOCK_USER.password) {
+      alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    setUser({ id: MOCK_USER.id, name: MOCK_USER.name });
+    navigate("/");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
   };
 
   const handleSignup = () => {
@@ -36,6 +63,7 @@ const LoginPage = () => {
           placeholder="아이디"
           value={id}
           onChange={(e) => setId(e.target.value)}
+          onKeyDown={handleKeyDown}
           className="w-full h-12 rounded-[10px] border border-[#2a3a5a] bg-white px-4 text-sm text-gray-700 placeholder-[#999999] outline-none font-[Inter]"
         />
 
@@ -45,6 +73,7 @@ const LoginPage = () => {
           placeholder="비밀번호"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={handleKeyDown}
           className="w-full h-12 rounded-[10px] border border-[#2a3a5a] bg-white px-4 text-sm text-gray-700 placeholder-[#999999] outline-none font-[Inter]"
         />
 
@@ -52,13 +81,13 @@ const LoginPage = () => {
         <div className="flex w-full gap-3">
           <button
             onClick={handleLogin}
-            className="flex-1 h-12 rounded-[10px] bg-[#1a3a6b] text-white text-[15px] font-semibold cursor-pointer hover:opacity-90 transition-opacity font-[Inter]"
+            className="flex-1 h-12 rounded-[10px] bg-[#1a3a6b] text-white text-[15px] font-semibold cursor-pointer hover:opacity-90 transition-opacity font-[Inter] border-none"
           >
             로그인
           </button>
           <button
             onClick={handleSignup}
-            className="flex-1 h-12 rounded-[10px] bg-[#7c5cbf] text-white text-[15px] font-semibold cursor-pointer hover:opacity-90 transition-opacity font-[Inter]"
+            className="flex-1 h-12 rounded-[10px] bg-[#7c5cbf] text-white text-[15px] font-semibold cursor-pointer hover:opacity-90 transition-opacity font-[Inter] border-none"
           >
             회원가입
           </button>
